@@ -9,6 +9,8 @@
 import Foundation
 
 enum planeDetection {
-    case horizontal,vertical,image
+    case horizontal
+    case vertical
+    case image
 }
 

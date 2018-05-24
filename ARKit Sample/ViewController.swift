@@ -45,13 +45,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let configuration = ARWorldTrackingConfiguration()
         
         if plane == planeDetection.horizontal {
-             print("horizontal")
-            
             configuration.planeDetection = .horizontal
         }
         if plane == planeDetection.vertical {
-            print("vertical")
-            
             configuration.planeDetection = .vertical
         }
         if plane == planeDetection.image {
@@ -87,7 +83,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             let height = CGFloat(planeAnchor.extent.z)
             let plane = SCNPlane(width: width, height: height)
             
-            plane.materials.first?.diffuse.contents = UIColor.blue
+            plane.materials.first?.diffuse.contents = UIColor.gray.withAlphaComponent(0.5)
             
             let planeNode = SCNNode(geometry: plane)
             
@@ -104,7 +100,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             let height = CGFloat(planeAnchor.extent.y)
             let plane = SCNPlane(width: width, height: height)
             
-            plane.materials.first?.diffuse.contents = UIColor.blue
+            plane.materials.first?.diffuse.contents = UIColor.gray.withAlphaComponent(0.5)
+            
             
             let planeNode = SCNNode(geometry: plane)
             
@@ -117,11 +114,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             print(planeNode)
             node.addChildNode(planeNode)
         }
-        
-        
-        
 
-        
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
@@ -131,13 +124,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             let plane = planeNode.geometry as? SCNPlane
             else { return }
         
+        if planeType == planeDetection.horizontal {
+            let width = CGFloat(planeAnchor.extent.x)
+            let height = CGFloat(planeAnchor.extent.z)
+            plane.width = width
+            plane.height = height
+        }
         
-        let width = CGFloat(planeAnchor.extent.x)
-        let height = CGFloat(planeAnchor.extent.z)
-        plane.width = width
-        plane.height = height
+        if planeType == planeDetection.vertical {
+            let width = CGFloat(planeAnchor.extent.z)
+            let height = CGFloat(planeAnchor.extent.y)
+            plane.width = width
+            plane.height = height
+        }
         
-
+        
         let x = CGFloat(planeAnchor.center.x)
         let y = CGFloat(planeAnchor.center.y)
         let z = CGFloat(planeAnchor.center.z)
