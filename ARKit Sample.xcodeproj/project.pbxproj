@@ -26,6 +26,7 @@
 		5F577E4120B73699003D65FF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5F577E4320B73699003D65FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5F577E4920B739FC003D65FF /* Global.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
+		5F94B45820B82C0200DB0417 /* ARKit Sample copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ARKit Sample copy-Info.plist"; path = "/Users/gennaroamura/Desktop/ArKitSample/ARKit Sample/ARKit Sample copy-Info.plist"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +45,7 @@
 			children = (
 				5F577E3420B73698003D65FF /* ARKit Sample */,
 				5F577E3320B73698003D65FF /* Products */,
+				5F94B45820B82C0200DB0417 /* ARKit Sample copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};

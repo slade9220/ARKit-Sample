@@ -19,13 +19,17 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     var planeType = planeDetection.image
+    var boolImgPlane = false
     
-    @IBOutlet weak var planeButton: UIButton!
+    @IBOutlet weak var horizontalPlane: UIButton!
     @IBOutlet weak var imageRecognition: UIButton!
+    @IBOutlet weak var verticalPlane: UIButton!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        imageRecognition.isHidden = true
         // Set the view's delegate
         sceneView.delegate = self
         sceneView.showsStatistics = true
@@ -34,7 +38,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.automaticallyUpdatesLighting = true
         
         setupSession(plane: planeType)
-
     }
     
     
@@ -58,8 +61,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         if plane == planeDetection.image {
             guard let referenceImages = ARReferenceImage.referenceImages(inGroupNamed: "AR Resources", bundle: nil) else { return }
             configuration.detectionImages = referenceImages
+            boolImgPlane = false
         }
-        
+        for child in sceneView.scene.rootNode.childNodes{
+            child.removeFromParentNode()
+        }
         sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
     
@@ -69,33 +75,42 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         if planeType != planeDetection.image {
             planeType = planeDetection.image
             setupSession(plane: planeType)
-            return
-        } else {
-            planeType = planeDetection.image
-            setupSession(plane: planeType)
-        }
-        
-    }
-    
-    
-    @IBAction func planeButtonPressed(_ sender: Any) {
-        
-       
-        if planeType == planeDetection.horizontal {
-            planeType = planeDetection.vertical
-            setupSession(plane: planeType)
-            return
-        } else {
-            planeButton.titleLabel?.text = "Orizonatal"
-            planeType = planeDetection.horizontal
-            setupSession(plane: planeType)
+            imageRecognition.isHidden = true
+            verticalPlane.isHidden = false
+            horizontalPlane.isHidden = false
             return
         }
+        
     }
 
+    @IBAction func planeButtonPressed(_ sender: Any) {
+
+        if planeType != planeDetection.horizontal {
+            planeType = planeDetection.horizontal
+            setupSession(plane: planeType)
+            imageRecognition.isHidden = false
+            verticalPlane.isHidden = false
+            horizontalPlane.isHidden = true
+        }
+        
+    }
+    
+    @IBAction func verticalPlanePressed(_ sender: Any) {
+        
+        if planeType != planeDetection.vertical {
+            planeType = planeDetection.vertical
+            setupSession(plane: planeType)
+            imageRecognition.isHidden = false
+            verticalPlane.isHidden = true
+            horizontalPlane.isHidden = false
+        }
+        
+    }
+    
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         
         if  planeType == planeDetection.horizontal {
+            
             guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
             let width = CGFloat(planeAnchor.extent.x)
             let height = CGFloat(planeAnchor.extent.z)
@@ -114,6 +129,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             node.addChildNode(planeNode)
         }
         if  planeType == planeDetection.vertical {
+            
             guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
             let width = CGFloat(planeAnchor.extent.z)
             let height = CGFloat(planeAnchor.extent.y)
@@ -123,7 +139,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             
             let planeNode = SCNNode(geometry: plane)
-            
             let x = CGFloat(planeAnchor.center.x)
             let y = CGFloat(planeAnchor.center.y)
             let z = CGFloat(planeAnchor.center.z)
@@ -135,16 +150,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
         
         if planeType == planeDetection.image {
-            
-            guard let imageAnchor = anchor as? ARImageAnchor else { return }
-            let referenceImage = imageAnchor.referenceImage
-            
-            let plane = SCNPlane(width: referenceImage.physicalSize.width, height: referenceImage.physicalSize.height)
-            plane.materials.first?.diffuse.contents = UIColor.gray.withAlphaComponent(0.5)
-            
-            let planeNode = SCNNode(geometry: plane)
-            planeNode.eulerAngles.x = -.pi / 2
-            node.addChildNode(planeNode)
+            if(boolImgPlane) {
+                print("return")
+                return
+            }else{
+                guard let imageAnchor = anchor as? ARImageAnchor else { return }
+                let referenceImage = imageAnchor.referenceImage
+
+                let plane = SCNPlane(width: referenceImage.physicalSize.width,
+                                     height: referenceImage.physicalSize.height)
+                let planeNode = SCNNode(geometry: plane)
+                planeNode.opacity = 0.25
+                planeNode.eulerAngles.x = -.pi / 2
+                
+                node.addChildNode(planeNode)
+            }
         }
         
         
@@ -184,10 +204,31 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             let z = CGFloat(planeAnchor.center.z)
             planeNode.position = SCNVector3(x, y, z)
         }
-       
-        
-        
+
     }
     
+}
+
+extension SCNNode {
+    
+    convenience init(named name: String) {
+        self.init()
+        
+        guard let scene = SCNScene(named: name) else {
+            return
+        }
+        
+        for childNode in scene.rootNode.childNodes {
+            addChildNode(childNode)
+        }
+    }
+    
+}
+
+extension float4x4 {
+    var translation: float3 {
+        let translation = self.columns.3
+        return float3(translation.x, translation.y, translation.z)
+    }
 }
 
