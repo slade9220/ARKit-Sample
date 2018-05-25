@@ -14,12 +14,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    override func prefersHomeIndicatorAutoHidden() -> Bool {
+        return true
+    }
+    
     var planeType = planeDetection.horizontal
     
     @IBOutlet weak var planeButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
         
         // Set the view's delegate
         sceneView.delegate = self

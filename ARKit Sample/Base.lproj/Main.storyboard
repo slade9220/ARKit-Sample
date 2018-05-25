@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -15,14 +15,14 @@
             <objects>
                 <viewController id="BV1-FR-VrT" customClass="ViewController" customModule="ARKit_Sample" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FKs-2H-Cot">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="waD-PN-gWd">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                            <arscnView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" wantsMultisampling="YES" translatesAutoresizingMaskIntoConstraints="NO" id="waD-PN-gWd">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                             </arscnView>
-                            <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gAq-Z2-eCA">
-                                <rect key="frame" x="29" y="583" width="122" height="55"/>
+                            <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gAq-Z2-eCA">
+                                <rect key="frame" x="16" y="655" width="122" height="55"/>
                                 <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="122" id="2D3-Cy-tNy"/>
@@ -38,12 +38,12 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="oPb-4h-0sh" firstAttribute="trailing" secondItem="waD-PN-gWd" secondAttribute="trailing" id="6ho-mH-Mk2"/>
-                            <constraint firstItem="waD-PN-gWd" firstAttribute="top" secondItem="oPb-4h-0sh" secondAttribute="top" id="NJH-oT-iVy"/>
-                            <constraint firstItem="oPb-4h-0sh" firstAttribute="bottom" secondItem="gAq-Z2-eCA" secondAttribute="bottom" constant="29" id="eAG-aG-ROf"/>
-                            <constraint firstItem="oPb-4h-0sh" firstAttribute="bottom" secondItem="waD-PN-gWd" secondAttribute="bottom" id="q3Y-X3-WJy"/>
-                            <constraint firstItem="gAq-Z2-eCA" firstAttribute="leading" secondItem="oPb-4h-0sh" secondAttribute="leading" constant="29" id="qXM-Qn-uFJ"/>
-                            <constraint firstItem="waD-PN-gWd" firstAttribute="leading" secondItem="oPb-4h-0sh" secondAttribute="leading" id="voI-UO-tqx"/>
+                            <constraint firstAttribute="bottom" secondItem="waD-PN-gWd" secondAttribute="bottom" id="004-hu-0Xh"/>
+                            <constraint firstItem="waD-PN-gWd" firstAttribute="leading" secondItem="oPb-4h-0sh" secondAttribute="leading" id="Fu2-Yf-PR0"/>
+                            <constraint firstItem="waD-PN-gWd" firstAttribute="trailing" secondItem="oPb-4h-0sh" secondAttribute="trailing" id="JXv-qf-ABK"/>
+                            <constraint firstItem="gAq-Z2-eCA" firstAttribute="top" secondItem="oPb-4h-0sh" secondAttribute="top" constant="563" id="NQm-kb-OdL"/>
+                            <constraint firstItem="waD-PN-gWd" firstAttribute="top" secondItem="FKs-2H-Cot" secondAttribute="top" id="leU-XA-oWw"/>
+                            <constraint firstItem="gAq-Z2-eCA" firstAttribute="leading" secondItem="oPb-4h-0sh" secondAttribute="leading" constant="29" id="rrp-at-ZsF"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="oPb-4h-0sh"/>
                     </view>
@@ -54,7 +54,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="32.799999999999997" y="33.733133433283363"/>
+            <point key="canvasLocation" x="32.799999999999997" y="33.251231527093594"/>
         </scene>
     </scenes>
 </document>
