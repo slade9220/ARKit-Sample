@@ -38,6 +38,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.automaticallyUpdatesLighting = true
         
         setupSession(plane: planeType)
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTapGesture(withGestureRecognizer:)))
+        sceneView.addGestureRecognizer(tapGestureRecognizer)
+        let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(ViewController.pinchToZoom(gesture:)))
+        sceneView.addGestureRecognizer(pinchGestureRecognizer)
     }
     
     
@@ -63,10 +68,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             configuration.detectionImages = referenceImages
             boolImgPlane = false
         }
+        
         for child in sceneView.scene.rootNode.childNodes{
             child.removeFromParentNode()
         }
-        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        if plane == planeDetection.none {
+            sceneView.session.run(configuration)
+        } else {
+           sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        }
+        
     }
     
     
@@ -108,6 +119,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        
+        if planeType == planeDetection.none {
+            return
+        }
         
         if  planeType == planeDetection.horizontal {
             
@@ -173,7 +188,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         
-         if planeType == planeDetection.image {
+         if planeType == planeDetection.image || planeType == planeDetection.none {
             
             return
             
@@ -207,23 +222,44 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
     }
     
-}
-
-extension SCNNode {
-    
-    convenience init(named name: String) {
-        self.init()
+    @objc func handleTapGesture(withGestureRecognizer recognizer: UIGestureRecognizer) {
         
-        guard let scene = SCNScene(named: name) else {
+        if planeType == planeDetection.none {
             return
+        } else{
+            let tapLocation = recognizer.location(in: sceneView)
+            let hitTestResults = sceneView.hitTest(tapLocation, types: .existingPlaneUsingExtent)
+            
+            guard let hitTestResult = hitTestResults.first else { return }
+            let translation = hitTestResult.worldTransform.translation
+            let x = translation.x
+            let y = translation.y
+            let z = translation.z
+            
+            guard let shipScene = SCNScene(named: "art.scnassets/ship.scn"),
+                let shipNode = shipScene.rootNode.childNode(withName: "ship", recursively: false)
+                else { return }
+            
+            
+            planeType = planeDetection.none
+            
+            setupSession(plane: planeType)
+            shipNode.position = SCNVector3(x,y,z)
+            sceneView.scene.rootNode.addChildNode(shipNode)
         }
         
-        for childNode in scene.rootNode.childNodes {
-            addChildNode(childNode)
+    }
+    
+    @objc func pinchToZoom(gesture:UIPinchGestureRecognizer) {
+        if (gesture.state == .began || gesture.state == .changed) {
+            guard let node = sceneView.scene.rootNode.childNodes.first else { return }
+            node.scale = SCNVector3(gesture.scale,gesture.scale,gesture.scale)
+            
         }
     }
     
 }
+
 
 extension float4x4 {
     var translation: float3 {
