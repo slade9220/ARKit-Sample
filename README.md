@@ -10,8 +10,9 @@
  
  
  <div align="center">
- <a href="https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE"><img src="https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg" alt="IMAGE ALT TEXT"></a>
+ <a href="https://www.youtube.com/watch?v=rjZG91ft3Ig"><img src="https://img.youtube.com/vi/rjZG91ft3Ig/0.jpg" alt="IMAGE ALT TEXT"></a>
  </div>
+ 
  
  ** Richiede un dispositivo Apple compatibile con ARKit e con iOs 11.3 o più.
  
