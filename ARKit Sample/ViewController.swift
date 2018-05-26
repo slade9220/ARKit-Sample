@@ -19,7 +19,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         return true
     }
     
-    var planeType = planeDetection.image
+    var planeType = planeDetection.none
     var boolImgPlane = false
     
     private var refreshTimer: Timer?
@@ -34,8 +34,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        imageRecognition.isHidden = true
-    
         sceneView.delegate = self
         sceneView.showsStatistics = true
         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
@@ -63,6 +61,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     
     func setupSession(plane: planeDetection) {
+        refreshTimer?.invalidate()
         
         let configuration = ARWorldTrackingConfiguration()
         
