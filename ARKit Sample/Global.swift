@@ -12,6 +12,8 @@ enum planeDetection {
     case horizontal
     case vertical
     case image
+    case face
     case none
 }
+
 

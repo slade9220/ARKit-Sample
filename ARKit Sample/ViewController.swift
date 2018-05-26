@@ -9,6 +9,7 @@
 import UIKit
 import SceneKit
 import ARKit
+import Vision
 
 class ViewController: UIViewController, ARSCNViewDelegate {
 
@@ -21,16 +22,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var planeType = planeDetection.image
     var boolImgPlane = false
     
+    private var refreshTimer: Timer?
+    private var maskView = [UIView]()
+    
     @IBOutlet weak var horizontalPlane: UIButton!
     @IBOutlet weak var imageRecognition: UIButton!
     @IBOutlet weak var verticalPlane: UIButton!
+    @IBOutlet weak var faceScanning: UIButton!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         imageRecognition.isHidden = true
-        // Set the view's delegate
+    
         sceneView.delegate = self
         sceneView.showsStatistics = true
         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
@@ -49,6 +54,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
+        if planeType == planeDetection.face {
+            refreshTimer?.invalidate()
+        }
+        
         sceneView.session.pause()
     }
     
@@ -68,6 +77,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             configuration.detectionImages = referenceImages
             boolImgPlane = false
         }
+        if plane == planeDetection.face {
+            refreshTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(scanFacesInScene), userInfo: nil, repeats: true)
+        }
         
         for child in sceneView.scene.rootNode.childNodes{
             child.removeFromParentNode()
@@ -77,7 +89,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         } else {
            sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         }
-        
     }
     
     
@@ -89,9 +100,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             imageRecognition.isHidden = true
             verticalPlane.isHidden = false
             horizontalPlane.isHidden = false
+            faceScanning.isHidden = false
             return
         }
-        
     }
 
     @IBAction func planeButtonPressed(_ sender: Any) {
@@ -102,8 +113,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             imageRecognition.isHidden = false
             verticalPlane.isHidden = false
             horizontalPlane.isHidden = true
+            faceScanning.isHidden = false
         }
-        
     }
     
     @IBAction func verticalPlanePressed(_ sender: Any) {
@@ -114,13 +125,26 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             imageRecognition.isHidden = false
             verticalPlane.isHidden = true
             horizontalPlane.isHidden = false
+            faceScanning.isHidden = false
         }
+    }
+    
+    @IBAction func faceScanningPressed(_ sender: Any) {
         
+        if planeType != planeDetection.face {
+            planeType = planeDetection.face
+            setupSession(plane: planeType)
+            faceScanning.isHidden = true
+            imageRecognition.isHidden = false
+            verticalPlane.isHidden = false
+            horizontalPlane.isHidden = false
+            return
+        }
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         
-        if planeType == planeDetection.none {
+        if planeType == planeDetection.none || planeType == planeDetection.face {
             return
         }
         
@@ -188,7 +212,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         
-         if planeType == planeDetection.image || planeType == planeDetection.none {
+         if planeType == planeDetection.image || planeType == planeDetection.none || planeType == planeDetection.face {
             
             return
             
@@ -220,6 +244,36 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             planeNode.position = SCNVector3(x, y, z)
         }
 
+    }
+    
+    @objc func scanFacesInScene() {
+        
+        let lastView = maskView.map { $0.removeFromSuperview() }
+        maskView.removeAll()
+        
+
+        guard let capturedImage = sceneView.session.currentFrame?.capturedImage else { return }
+        let image = CIImage.init(cvPixelBuffer: capturedImage)
+        
+        let detectFaceRequest = VNDetectFaceRectanglesRequest { (request, error) in
+            DispatchQueue.main.async {
+                //Loop through the resulting faces and add a red UIView on top of them.
+                if let faces = request.results as? [VNFaceObservation] {
+                    for face in faces {
+                        let faceView = UIImageView(frame: self.faceDetectedFrame(from: face.boundingBox))
+                        
+                        faceView.image = UIImage(named: "face.png")
+                        faceView.contentMode = .scaleAspectFit
+                        self.sceneView.addSubview(faceView)
+                        self.maskView.append(faceView)
+                    }
+                }
+            }
+        }
+        
+        DispatchQueue.global().async {
+            try? VNImageRequestHandler(ciImage: image, orientation: CGImagePropertyOrientation.right ).perform([detectFaceRequest])
+        }
     }
     
     @objc func handleTapGesture(withGestureRecognizer recognizer: UIGestureRecognizer) {
@@ -257,6 +311,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
         }
     }
+    
+    func faceDetectedFrame(from boundingBox: CGRect) -> CGRect {
+        
+        let origin = CGPoint(x: boundingBox.minX * sceneView.bounds.width, y: (1 - boundingBox.maxY) * sceneView.bounds.height)
+        let size = CGSize(width: boundingBox.width * sceneView.bounds.width, height: boundingBox.height * sceneView.bounds.height)
+        
+        return CGRect(origin: origin, size: size)
+    }
+    
+    
     
 }
 
