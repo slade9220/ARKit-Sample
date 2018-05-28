@@ -16,6 +16,10 @@ ARKit-Sample is a demo about ARkit :
 
 v2.0
 Add Face tracking
+<div style="padding-top:10px;padding-bottom:20px" align="left">
+<a href="https://www.youtube.com/watch?v=HcVhpuyE7wU"><img src="https://img.youtube.com/vi/HcVhpuyE7wU/0.jpg" alt="youtube_link"></a>
+</div>
+
 
 
  🇮🇹:
@@ -34,7 +38,9 @@ Add Face tracking
  
  v2.0
  Aggiunto face tracking 
- 
+ <div style="padding-top:10px;padding-bottom:20px" align="left">
+ <a href="https://www.youtube.com/watch?v=HcVhpuyE7wU"><img src="https://img.youtube.com/vi/HcVhpuyE7wU/0.jpg" alt="youtube_link"></a>
+ </div>
  
  
  
